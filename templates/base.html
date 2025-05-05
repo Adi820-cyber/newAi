@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI-Powered Security Analyzer{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            light: '#3B82F6', // Blue
+                            dark: '#60A5FA'
+                        },
+                        background: {
+                            light: '#ffffff',
+                            dark: '#1F2937'
+                        },
+                        card: {
+                            light: '#F9FAFB',
+                            dark: '#374151'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-in-out',
+                        'slide-down': 'slideDown 0.5s ease-in-out',
+                        'slide-in-right': 'slideInRight 0.5s ease-in-out',
+                        'slide-in-left': 'slideInLeft 0.5s ease-in-out',
+                        'bounce-in': 'bounceIn 0.7s ease-in-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'spin-slow': 'spin 3s linear infinite',
+                        'float': 'float 3s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        slideDown: {
+                            '0%': { transform: 'translateY(-20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        slideInLeft: {
+                            '0%': { transform: 'translateX(-20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        bounceIn: {
+                            '0%': { transform: 'scale(0.8)', opacity: '0' },
+                            '50%': { transform: 'scale(1.05)' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        },
+                        float: {
+                            '0%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                            '100%': { transform: 'translateY(0px)' }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Theme toggle functionality
+        function toggleDarkMode() {
+            const htmlElement = document.documentElement;
+            const isDarkMode = htmlElement.classList.contains('dark');
+            
+            // Add transition class for smooth color transitions
+            htmlElement.classList.add('color-transition');
+            
+            // Toggle dark mode
+            if (isDarkMode) {
+                htmlElement.classList.remove('dark');
+                localStorage.theme = 'light';
+                
+                // Animate the bulb
+                document.querySelector('.theme-toggle').classList.add('animate-spin-once');
+                setTimeout(() => {
+                    document.querySelector('.theme-toggle').classList.remove('animate-spin-once');
+                }, 500);
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.theme = 'dark';
+                
+                // Animate the bulb
+                document.querySelector('.theme-toggle').classList.add('animate-spin-once');
+                setTimeout(() => {
+                    document.querySelector('.theme-toggle').classList.remove('animate-spin-once');
+                }, 500);
+            }
+        }
+
+        // Check for saved theme preference
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
+        // Add page transition animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate main content
+            const mainContent = document.getElementById('main-content');
+            if (mainContent) {
+                mainContent.classList.add('animate-fade-in');
+            }
+            
+            // Animate cards with staggered delay
+            const cards = document.querySelectorAll('.animate-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-bounce-in');
+                    card.style.opacity = 1;
+                }, 100 * index);
+            });
+        });
+    </script>
+    <style>
+        .logo-container {
+            width: 180px;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+        .logo-container:hover {
+            transform: scale(1.05);
+        }
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3B82F6;
+            margin-left: 10px;
+        }
+        .dark .logo-text {
+            color: #60A5FA;
+        }
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 50;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-color: #f3f4f6;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        .dark .theme-toggle {
+            background-color: #374151;
+        }
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+        .bulb-on {
+            color: #fbbf24;
+            display: none;
+            filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.5));
+        }
+        .dark .bulb-on {
+            display: block;
+        }
+        .bulb-off {
+            color: #6b7280;
+            display: block;
+        }
+        .dark .bulb-off {
+            display: none;
+        }
+        
+        /* Animation classes */
+        .color-transition {
+            transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+        }
+        .animate-spin-once {
+            animation: spin 0.5s ease-in-out;
+        }
+        .animate-card {
+            opacity: 0;
+            animation-fill-mode: forwards; /* Ensure final state is maintained */
+        }
+        
+        /* Page transition effect */
+        .page-transition {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        
+        /* Keyframe animations */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Hover animations */
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        /* Button animations */
+        .btn-animated {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-animated:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        .btn-animated:hover:after {
+            animation: ripple 1s ease-out;
+        }
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
+    <!-- Global Loading Animation -->
+    <div id="globalLoader" class="fixed inset-0 bg-white dark:bg-gray-900 flex items-center justify-center z-50">
+        <div class="text-center">
+            <img src="{{ url_for('static', filename='images/Animation - 1746267615066.gif') }}" alt="Loading..." class="w-32 h-32 mx-auto">
+            <p class="mt-4 text-lg font-medium text-gray-700 dark:text-gray-300">Loading Security Analyzer...</p>
+        </div>
+    </div>
+    <!-- Theme Toggle Button - Bulb Icon -->
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Toggle dark/light mode">
+        <!-- Bulb ON (visible in dark mode) -->
+        <svg class="bulb-on w-6 h-6 animate-pulse-slow" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z"></path>
+        </svg>
+        <!-- Bulb OFF (visible in light mode) -->
+        <svg class="bulb-off w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z"></path>
+        </svg>
+    </button>
+
+    <div id="main-content">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <!-- Footer with Terms and Privacy Links -->
+    <footer class="py-4 bg-gray-100 dark:bg-gray-800 transition-colors duration-300 mt-auto">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-600 dark:text-gray-400">
+            <div>&copy; 2025 Security Analyzer. All rights reserved.</div>
+            <div class="flex space-x-6 mt-2 md:mt-0">
+                <a href="{{ url_for('terms') }}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200">Terms & Conditions</a>
+                <a href="{{ url_for('privacy') }}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+
+<!-- Global loader animation script -->
+<script>
+    // Hide the global loader when the page is fully loaded
+    window.addEventListener('load', function() {
+        const loader = document.getElementById('globalLoader');
+        if (loader) {
+            // Add fade-out animation
+            loader.style.transition = 'opacity 0.5s ease';
+            loader.style.opacity = '0';
+            
+            // Remove from DOM after animation completes
+            setTimeout(function() {
+                loader.style.display = 'none';
+            }, 500);
+        }
+    });
+</script>
+</body>
+<script>
+    // Add page transition effect
+    document.addEventListener('DOMContentLoaded', function() {
+        document.body.classList.add('page-transition');
+        
+        // Add event listeners to all internal links for smooth transitions
+        document.querySelectorAll('a[href^="/"]:not([target="_blank"])').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.hostname === window.location.hostname) {
+                    e.preventDefault();
+                    document.body.style.opacity = 0;
+                    
+                    setTimeout(() => {
+                        window.location.href = this.href;
+                    }, 300);
+                }
+            });
+        });
+    });
+</script>
+</html>

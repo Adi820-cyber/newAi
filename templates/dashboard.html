@@ -1,0 +1,942 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - AI-Powered Security Analyzer{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+<style>
+    :root {
+        --bg-primary: #f9fafb;
+        --bg-secondary: #ffffff;
+        --text-primary: #1f2937;
+        --text-secondary: #4b5563;
+        --border-color: #e5e7eb;
+        --accent-color: #4f46e5;
+        --accent-hover: #4338ca;
+        --card-bg: #ffffff;
+        --sidebar-bg: #4f46e5;
+        --sidebar-text: #ffffff;
+        --sidebar-text-muted: #c7d2fe;
+        --success-bg: #d1fae5;
+        --success-text: #047857;
+        --warning-bg: #fef3c7;
+        --warning-text: #92400e;
+        --danger-bg: #fee2e2;
+        --danger-text: #b91c1c;
+        --table-stripe: #f3f4f6;
+        --table-border: #e5e7eb;
+    }
+
+    .dark-mode {
+        --bg-primary: #111827;
+        --bg-secondary: #1f2937;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --border-color: #374151;
+        --accent-color: #6366f1;
+        --accent-hover: #818cf8;
+        --card-bg: #1f2937;
+        --sidebar-bg: #312e81;
+        --sidebar-text: #ffffff;
+        --sidebar-text-muted: #a5b4fc;
+        --success-bg: #064e3b;
+        --success-text: #a7f3d0;
+        --warning-bg: #78350f;
+        --warning-text: #fcd34d;
+        --danger-bg: #7f1d1d;
+        --danger-text: #fca5a5;
+        --table-stripe: #374151;
+        --table-border: #4b5563;
+    }
+    
+    body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    @keyframes float {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0); }
+    }
+    .animate-float {
+        animation: float 2s ease-out infinite;
+    }
+    
+    @keyframes slide-in-left {
+        0% { transform: translateX(-100px); opacity: 0; }
+        100% { transform: translateX(0); opacity: 1; }
+    }
+    .animate-slide-in-left {
+        animation: slide-in-left 0.5s ease-out forwards;
+        opacity: 0;
+    }
+    
+    @keyframes bounce-in {
+        0% { transform: scale(0.5); opacity: 0; }
+        50% { transform: scale(1.2); opacity: 1; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-bounce-in {
+        animation: bounce-in 0.5s ease-out forwards;
+        opacity: 0;
+    }
+    
+    @keyframes pulse-slow {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    .animate-pulse-slow {
+        animation: pulse-slow 2s ease-out infinite;
+    }
+    
+    @keyframes spin-slow {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+        animation: spin-slow 2s ease-out infinite;
+    }
+    
+    @keyframes slide-down {
+        0% { transform: translateY(-100px); opacity: 0; }
+        100% { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-down {
+        animation: slide-down 0.5s ease-out forwards;
+        opacity: 0;
+    }
+    
+    @keyframes slide-up {
+        0% { transform: translateY(100px); opacity: 0; }
+        100% { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-up {
+        animation: slide-up 0.5s ease-out forwards;
+        opacity: 0;
+    }
+    
+    @keyframes card-appear {
+        0% { opacity: 0; transform: translateY(10px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-card {
+        animation: card-appear 0.5s ease-out forwards;
+        opacity: 0;
+    }
+    
+    /* Loading animation */
+    @keyframes loading-pulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+    }
+    .loading-animation {
+        display: none;
+        animation: loading-pulse 1.5s ease-in-out infinite;
+    }
+    
+    /* Apply animation-fill-mode to all animations to ensure they maintain final state */
+    [class*="animate-"] {
+        animation-fill-mode: forwards !important;
+    }
+    
+    /* Ensure elements don't disappear after animation */
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    /* Sidebar styles */
+    .sidebar {
+        height: calc(100vh - 4rem);
+        position: sticky;
+        top: 4rem;
+        transition: width 0.3s ease;
+    }
+    
+    .active-nav {
+        background-color: rgba(59, 130, 246, 0.1);
+        color: #3B82F6;
+    }
+    
+    .dark .active-nav {
+        background-color: rgba(96, 165, 250, 0.1);
+        color: #60A5FA;
+    }
+    
+    /* Enhanced sidebar item hover effect */
+    .sidebar-item {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .sidebar-item:hover {
+        transform: translateX(5px);
+    }
+    
+    .sidebar-item::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 0;
+        background-color: #3B82F6;
+        transition: width 0.3s ease;
+    }
+    
+    .dark .sidebar-item::after {
+        background-color: #60A5FA;
+    }
+    
+    .sidebar-item:hover::after {
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-col min-h-screen">
+    <!-- Header with Dark Mode Toggle -->
+    <header class="bg-white dark:bg-gray-800 shadow-md transition-colors duration-300">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="{{ url_for('static', filename='images/cyber_ai_logo_use_cyber_wolf_with_name_cyberai_look__and_fill_realstic_and_orignal_more_atractive-removebg-preview.png') }}" alt="CyberAI Wolf Logo" class="h-12 mr-3">
+                <div class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Security Analyzer</div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-sm text-gray-600 dark:text-gray-300">Welcome, <span class="font-semibold">{{ user.name }}</span></div>
+                <a href="/logout" class="ml-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition-colors duration-300 dark:bg-indigo-700 dark:hover:bg-indigo-800">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex flex-1">
+        <!-- Sidebar -->
+        <div class="w-64 bg-indigo-800 dark:bg-indigo-900 text-white p-4 flex flex-col transition-colors duration-300">
+            <div class="mb-8">
+                <div class="text-sm text-indigo-300 dark:text-indigo-400 mb-2">Navigation</div>
+            </div>
+            
+            <nav class="flex-1">
+                <ul>
+                    <li class="mb-2">
+                        <a href="#" class="flex items-center p-2 rounded hover:bg-indigo-700 dark:hover:bg-indigo-800 transition-colors duration-200 bg-indigo-700 dark:bg-indigo-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                            </svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="flex items-center p-2 rounded hover:bg-indigo-700 dark:hover:bg-indigo-800 transition-colors duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v-1l1-1 1-1-.257-.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clip-rule="evenodd" />
+                            </svg>
+                            URL Analyzer
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#chat-section" class="flex items-center p-2 rounded hover:bg-indigo-700 dark:hover:bg-indigo-800 transition-colors duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
+                            </svg>
+                            Chat Bot
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="/chat_history_page" class="flex items-center p-2 rounded hover:bg-indigo-700 dark:hover:bg-indigo-800 transition-colors duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                            </svg>
+                            Chat History
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="/profile" class="flex items-center p-2 rounded hover:bg-indigo-700 dark:hover:bg-indigo-800 transition-colors duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                            </svg>
+                            Profile & Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="flex-1 p-8 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+            <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Dashboard</h1>
+            
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 transition-colors duration-300 transform hover:scale-105">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-300 mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Security Score</div>
+                            <div class="text-xl font-bold text-gray-800 dark:text-white" id="security-score">{{ user.security_score }}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 transition-colors duration-300 transform hover:scale-105">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 012-2H6a2 2 0 012-2v6a2 2 0 002 2v6a2 2 0 002 2h12a2 2 0 002-2v-6a2 2 0 012-2h-6z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Passwords Protected</div>
+                            <div class="text-xl font-bold text-gray-800 dark:text-white" id="passwords-protected">{{ user.passwords_protected }}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 transition-colors duration-300 transform hover:scale-105">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300 mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Threats Blocked</div>
+                            <div class="text-xl font-bold text-gray-800 dark:text-white" id="threats-blocked">{{ user.threats_blocked }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- URL Analyzer Section -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8 transition-colors duration-300">
+                <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">URL Analyzer</h2>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">Enter a URL to analyze its security and check for potential threats.</p>
+                
+                <form id="url-form" class="mb-4">
+                    <div class="flex">
+                        <input type="text" id="url-input" class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter URL (e.g., example.com)">
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 dark:bg-indigo-700 text-white rounded-r-md hover:bg-indigo-700 dark:hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-300">Analyze</button>
+                    </div>
+                </form>
+                
+                <div id="loading-animation" class="hidden text-center py-8">
+                    <img src="/static/images/Animation - 1746267615066.gif" alt="Loading..." class="w-24 h-24 mx-auto">
+                    <p class="text-gray-600 dark:text-gray-300 mt-4">Analyzing URL for security threats...</p>
+                </div>
+                
+                <div id="results-section" class="hidden">
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                        <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Analysis Results</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-md transition-colors duration-300">
+                                <div class="text-sm font-medium text-gray-500 dark:text-gray-300 mb-1">Security Score</div>
+                                <div class="text-2xl font-bold text-indigo-600 dark:text-indigo-400" id="result-score">--</div>
+                            </div>
+                            
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-md transition-colors duration-300">
+                                <div class="text-sm font-medium text-gray-500 dark:text-gray-300 mb-1">Status</div>
+                                <div class="text-lg font-semibold text-gray-800 dark:text-white" id="result-status">--</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h4 class="text-md font-semibold mb-2 text-gray-800 dark:text-white">Detected Issues</h4>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300" id="result-issues">
+                                <!-- Issues will be added here dynamically -->
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-md font-semibold mb-2 text-gray-800 dark:text-white">Recommendations</h4>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300" id="result-recommendations">
+                                <!-- Recommendations will be added here dynamically -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chat Section -->
+            <div id="chat-section" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8 transition-colors duration-300">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">Chat with CyberAI Expert</h2>
+                    <button id="new-chat-btn" class="flex items-center bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md shadow transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        New Chat
+                    </button>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">Get instant cybersecurity advice and support.</p>
+                
+                <div class="bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 mb-4">
+                    <div id="chat-history" class="p-4 overflow-y-auto" style="height: 400px;">
+                        <div class="text-center text-gray-500 dark:text-gray-400 text-sm mb-4">
+                            Start chatting with our AI cybersecurity expert to get help with cyber crime awareness, prevention, and solutions.
+                        </div>
+                        <!-- Chat messages will be inserted here -->
+                    </div>
+                    
+                    <div class="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                        <div class="flex items-center mb-2">
+                            <button id="upload-photo" class="text-blue-500 hover:text-blue-600 mr-2" title="Upload Photo">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <button id="upload-video" class="text-blue-500 hover:text-blue-600 mr-2" title="Upload Video">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                                    <path fill-rule="evenodd" d="M12 5a1 1 0 011 1v3.293l2.707-2.707a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L12 9.293V6a1 1 0 011-1z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <button id="record-audio" class="text-blue-500 hover:text-blue-600 mr-2" title="Record Audio">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <input type="file" id="file-input" class="hidden" accept="image/*,video/*,audio/*">
+                        </div>
+                        <div id="media-preview" class="hidden mb-2 relative rounded overflow-hidden">
+                            <img id="image-preview" class="hidden max-w-full max-h-32 rounded" src="" alt="Preview">
+                            <video id="video-preview" class="hidden max-w-full max-h-32 rounded" controls></video>
+                            <audio id="audio-preview" class="hidden w-full" controls></audio>
+                            <button id="cancel-media" class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 shadow">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="flex">
+                            <input id="chat-input" type="text" class="flex-1 rounded-l-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Type your message...">
+                            <button id="send-message" class="bg-blue-500 hover:bg-blue-600 text-white rounded-r-lg px-4 py-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Scans Section -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 transition-colors duration-300">
+                <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Recent Scans</h2>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">URL</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Result</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700" id="scans-table-body">
+                            <!-- Scan rows will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                    
+                    <div id="no-scans-message" class="text-center py-4 text-gray-500 dark:text-gray-400 hidden">
+                        No scans found. Try scanning a URL above.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-gray-800 dark:bg-gray-900 text-white py-4 transition-colors duration-300">
+    <div class="container mx-auto px-4 text-center">
+        <p>&copy; 2025 AI-Powered Security Analyzer. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Chat functionality
+    const chatInput = document.getElementById('chat-input');
+    const sendMessage = document.getElementById('send-message');
+    const chatHistory = document.getElementById('chat-history');
+    const uploadPhoto = document.getElementById('upload-photo');
+    const uploadVideo = document.getElementById('upload-video');
+    const recordAudio = document.getElementById('record-audio');
+    const fileInput = document.getElementById('file-input');
+    const mediaPreview = document.getElementById('media-preview');
+    const imagePreview = document.getElementById('image-preview');
+    const videoPreview = document.getElementById('video-preview');
+    const audioPreview = document.getElementById('audio-preview');
+    const cancelMedia = document.getElementById('cancel-media');
+    
+    let mediaData = null;
+    let mediaType = null;
+    let recorder = null;
+    let recordedChunks = [];
+    
+    // Load chat history
+    loadChatHistory();
+    
+    // Send message on enter key
+    chatInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            sendMessageToAI();
+        }
+    });
+    
+    // Send message on button click
+    sendMessage.addEventListener('click', sendMessageToAI);
+    
+    // Upload photo
+    uploadPhoto.addEventListener('click', function() {
+        fileInput.accept = 'image/*';
+        fileInput.click();
+    });
+    
+    // Upload video
+    uploadVideo.addEventListener('click', function() {
+        fileInput.accept = 'video/*';
+        fileInput.click();
+    });
+    
+    // Record audio
+    recordAudio.addEventListener('click', function() {
+        if (recorder && recorder.state === 'recording') {
+            recorder.stop();
+            recordAudio.classList.remove('text-red-500');
+            recordAudio.classList.add('text-blue-500');
+        } else {
+            startAudioRecording();
+        }
+    });
+    
+    // Handle file selection
+    fileInput.addEventListener('change', function() {
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                mediaData = e.target.result;
+                showMediaPreview(file);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Cancel media upload
+    cancelMedia.addEventListener('click', function() {
+        clearMediaPreview();
+    });
+    
+    // Load chat history from server
+    function loadChatHistory() {
+        // Show loading indicator with the animation GIF
+        chatHistory.innerHTML = `
+            <div class="text-center p-4">
+                <img src="/static/images/Animation - 1746267615066.gif" alt="Loading..." class="inline-block w-12 h-12">
+                <p class="mt-2 text-gray-500 dark:text-gray-400">Loading chat history...</p>
+            </div>`;
+        
+        fetch('/chat/history')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Clear loading indicator
+                    chatHistory.innerHTML = '';
+                    
+                    if (data.chats && data.chats.length > 0) {
+                        // Display chats in chronological order (oldest first)
+                        data.chats.reverse().forEach(chat => {
+                            // Add user message
+                            addMessageToChat('user', chat.message, chat.media_url, chat.media_type);
+                            
+                            // Add AI response
+                            addMessageToChat('ai', chat.response);
+                        });
+                    } else {
+                        // No chat history
+                        chatHistory.innerHTML = '<div class="text-center text-gray-500 dark:text-gray-400 text-sm mb-4">No previous chat messages. Start chatting with our AI cybersecurity expert!</div>';
+                    }
+                } else {
+                    chatHistory.innerHTML = '<div class="text-center text-red-500 dark:text-red-400 text-sm mb-4">Error loading chat history. Please refresh the page.</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading chat history:', error);
+                chatHistory.innerHTML = '<div class="text-center text-red-500 dark:text-red-400 text-sm mb-4">Error loading chat history. Please refresh the page.</div>';
+            });
+    }
+    
+    // Show media preview based on file type
+    function showMediaPreview(file) {
+        mediaPreview.classList.remove('hidden');
+        const fileType = file.type.split('/')[0];
+        
+        if (fileType === 'image') {
+            imagePreview.src = URL.createObjectURL(file);
+            imagePreview.classList.remove('hidden');
+            videoPreview.classList.add('hidden');
+            audioPreview.classList.add('hidden');
+            mediaType = 'photo';
+        } else if (fileType === 'video') {
+            videoPreview.src = URL.createObjectURL(file);
+            videoPreview.classList.remove('hidden');
+            imagePreview.classList.add('hidden');
+            audioPreview.classList.add('hidden');
+            mediaType = 'video';
+        } else if (fileType === 'audio') {
+            audioPreview.src = URL.createObjectURL(file);
+            audioPreview.classList.remove('hidden');
+            imagePreview.classList.add('hidden');
+            videoPreview.classList.add('hidden');
+            mediaType = 'audio';
+        }
+    }
+    
+    // Clear media preview
+    function clearMediaPreview() {
+        mediaPreview.classList.add('hidden');
+        imagePreview.classList.add('hidden');
+        videoPreview.classList.add('hidden');
+        audioPreview.classList.add('hidden');
+        
+        imagePreview.src = '';
+        videoPreview.src = '';
+        audioPreview.src = '';
+        
+        mediaData = null;
+        mediaType = null;
+        
+        // Clear file input
+        fileInput.value = null;
+    }
+    
+    // Start audio recording
+    function startAudioRecording() {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function(stream) {
+                    recordAudio.classList.remove('text-blue-500');
+                    recordAudio.classList.add('text-red-500');
+                    
+                    recorder = new MediaRecorder(stream);
+                    recordedChunks = [];
+                    
+                    recorder.ondataavailable = function(e) {
+                        if (e.data.size > 0) {
+                            recordedChunks.push(e.data);
+                        }
+                    };
+                    
+                    recorder.onstop = function() {
+                        // Create the audio file
+                        const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+                        const file = new File([blob], 'recording.webm', { type: 'audio/webm' });
+                        
+                        // Convert to base64
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            mediaData = e.target.result;
+                            mediaType = 'audio';
+                            showMediaPreview(file);
+                        };
+                        reader.readAsDataURL(blob);
+                        
+                        // Stop all tracks
+                        stream.getTracks().forEach(track => track.stop());
+                    };
+                    
+                    recorder.start();
+                })
+                .catch(function(err) {
+                    console.error('Error accessing microphone:', err);
+                    alert('Could not access microphone. Please check your permissions.');
+                });
+        } else {
+            alert('Your browser does not support audio recording.');
+        }
+    }
+    
+    // Send message to AI
+    function sendMessageToAI() {
+        const message = chatInput.value.trim();
+        if (!message && !mediaData) return;
+        
+        // Add user message to chat
+        addMessageToChat('user', message, mediaData, mediaType);
+        
+        // Clear input
+        chatInput.value = '';
+        
+        // Show loading animation
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'rounded-lg bg-gray-200 dark:bg-gray-700 p-3 max-w-[70%] relative ai-message';
+        loadingDiv.innerHTML = `
+            <div class="flex items-center space-x-2">
+                <img src="/static/images/Animation - 1746267615066.gif" alt="Loading..." class="w-8 h-8">
+                <span class="text-gray-600 dark:text-gray-300">Thinking...</span>
+            </div>
+        `;
+        chatHistory.appendChild(loadingDiv);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+        
+        // Send to server
+        fetch('/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message,
+                media: mediaData,
+                media_type: mediaType
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Remove loading indicator
+            chatHistory.removeChild(loadingDiv);
+            
+            if (data.success) {
+                // Add AI response to chat
+                addMessageToChat('ai', data.response, data.media_url);
+            } else {
+                // Show error message
+                addMessageToChat('system', 'Sorry, there was an error processing your request. Please try again.');
+            }
+        })
+        .catch(error => {
+            // Remove loading indicator
+            chatHistory.removeChild(loadingDiv);
+            
+            // Show error message
+            addMessageToChat('system', 'Sorry, there was a network error. Please try again.');
+            console.error('Error:', error);
+        });
+        
+        // Clear media preview
+        clearMediaPreview();
+    }
+    
+    // Add message to chat
+    function addMessageToChat(sender, message, media, mediaType) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-4`;
+        
+        let mediaHtml = '';
+        
+        if (media) {
+            if (mediaType === 'photo' || (!mediaType && media.startsWith('data:image'))) {
+                mediaHtml = `<img src="${media}" class="rounded-lg mb-2 max-w-full max-h-32" alt="Uploaded image">`;
+            } else if (mediaType === 'video' || (!mediaType && media.startsWith('data:video'))) {
+                mediaHtml = `<video src="${media}" class="rounded-lg mb-2 max-w-full max-h-32" controls></video>`;
+            } else if (mediaType === 'audio' || (!mediaType && media.startsWith('data:audio'))) {
+                mediaHtml = `<audio src="${media}" class="w-full mb-2" controls></audio>`;
+            } else if (typeof media === 'string' && media.startsWith('/static/')) {
+                // Server-stored media
+                if (mediaType === 'photo') {
+                    mediaHtml = `<img src="${media}" class="rounded-lg mb-2 max-w-full max-h-32" alt="Uploaded image">`;
+                } else if (mediaType === 'video') {
+                    mediaHtml = `<video src="${media}" class="rounded-lg mb-2 max-w-full max-h-32" controls></video>`;
+                } else if (mediaType === 'audio') {
+                    mediaHtml = `<audio src="${media}" class="w-full mb-2" controls></audio>`;
+                }
+            }
+        }
+        
+        const bgColor = sender === 'user' ? 'bg-blue-500 text-white' : 
+                       sender === 'ai' ? 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white' : 
+                       'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-100';
+        
+        messageDiv.innerHTML = `
+            <div class="rounded-lg ${bgColor} p-3 max-w-[70%]">
+                ${mediaHtml}
+                <p>${message || ''}</p>
+                <div class="text-xs opacity-70 text-right mt-1">${new Date().toLocaleTimeString()}</div>
+            </div>
+        `;
+        
+        chatHistory.appendChild(messageDiv);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+    
+    // Add event listener for New Chat button
+    document.getElementById('new-chat-btn').addEventListener('click', function() {
+        // Clear the chat history display
+        chatHistory.innerHTML = '<div class="text-center text-gray-500 dark:text-gray-400 text-sm mb-4">Start a new chat with our AI cybersecurity expert!</div>';
+        
+        // Clear any media preview
+        clearMediaPreview();
+        
+        // Clear the chat input
+        document.getElementById('chat-input').value = '';
+        
+        // Reset media data
+        mediaData = null;
+        mediaType = null;
+        
+        // Send a notification to the server that a new chat has begun
+        fetch('/chat/new', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('New chat session started successfully');
+            } else {
+                console.error('Error starting new chat:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error starting new chat:', error);
+        });
+    });
+    
+    // Dark mode toggle functionality
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.checked = true;
+    }
+    
+    // Toggle dark mode
+    darkModeToggle.addEventListener('change', function() {
+        if (this.checked) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('darkMode', 'disabled');
+        }
+    });
+
+    const urlForm = document.getElementById('url-form');
+    const urlInput = document.getElementById('url-input');
+    const loadingAnimation = document.getElementById('loading-animation');
+    const resultsSection = document.getElementById('results-section');
+    
+    // For demo purposes, we'll simulate the analysis with a timeout
+    
+    urlForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const url = urlInput.value.trim();
+        if (!url) return;
+        
+        // Show loading animation
+        loadingAnimation.style.display = 'flex';
+        resultsSection.style.display = 'none';
+        
+        // Send request to analyze URL
+        const formData = new FormData();
+        formData.append('url', url);
+        
+        fetch('/analyze', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Hide loading animation
+            loadingAnimation.style.display = 'none';
+            
+            // Display results
+            document.getElementById('result-url').textContent = data.url;
+            document.getElementById('result-score').textContent = data.score;
+            document.getElementById('result-status').textContent = data.safe ? 'Safe' : 'Threats Detected';
+            document.getElementById('result-status').className = data.safe ? 'text-sm font-semibold text-green-600' : 'text-sm font-semibold text-red-600';
+            
+            // Display threats
+            threatsList.innerHTML = '';
+            if (data.threats && data.threats.length > 0) {
+                data.threats.forEach(threat => {
+                    const li = document.createElement('li');
+                    li.textContent = threat;
+                    threatsList.appendChild(li);
+                });
+                document.getElementById('threats-section').style.display = 'block';
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'No threats detected';
+                threatsList.appendChild(li);
+                document.getElementById('threats-section').style.display = 'block';
+            }
+            
+            // Display recommendations
+            recommendationsList.innerHTML = '';
+            if (data.recommendations && data.recommendations.length > 0) {
+                data.recommendations.forEach(rec => {
+                    const li = document.createElement('li');
+                    li.textContent = rec;
+                    recommendationsList.appendChild(li);
+                });
+                document.getElementById('recommendations-section').style.display = 'block';
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'No recommendations at this time';
+                recommendationsList.appendChild(li);
+                document.getElementById('recommendations-section').style.display = 'block';
+            }
+            
+            // Add to recent scans table
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${data.url}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${data.score}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    ${data.safe ? 
+                    '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Safe</span>' : 
+                    '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Threats Detected</span>'}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date().toLocaleString()}</td>
+            `;
+            
+            // Insert at the beginning of the table
+            if (scansTableBody.firstChild) {
+                scansTableBody.insertBefore(newRow, scansTableBody.firstChild);
+            } else {
+                scansTableBody.appendChild(newRow);
+            }
+            
+            // Remove "No scans yet" row if it exists
+            const noScansRow = scansTableBody.querySelector('td[colspan="4"]');
+            if (noScansRow) {
+                noScansRow.parentElement.remove();
+            }
+            
+            // Update security stats
+            threatsBlocked.textContent = parseInt(threatsBlocked.textContent || 0) + (data.threats ? data.threats.length : 0);
+            securityScore.textContent = data.score;
+            
+            // Show results section
+            resultsSection.style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingAnimation.style.display = 'none';
+            alert('An error occurred while analyzing the URL. Please try again.');
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}Chat History - AI-Powered Security Analyzer{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex flex-col">
+    <!-- Header with Logo -->
+    <header class="bg-gray-100 dark:bg-gray-800 shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="logo-container animate-float">
+                <img src="{{ url_for('static', filename='images/cyber_ai_logo_use_cyber_wolf_with_name_cyberai_look__and_fill_realstic_and_orignal_more_atractive-removebg-preview.png') }}" alt="CyberAI Wolf Logo" class="h-16">
+                <span class="logo-text ml-2">CyberAI</span>
+            </a>
+            <div class="flex space-x-4">
+                <a href="/dashboard" class="btn-animated bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow hover-lift animate-slide-in-left">Dashboard</a>
+                <a href="/logout" class="btn-animated bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md shadow hover-lift animate-slide-in-right">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto">
+            <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Chat History</h1>
+            
+            <!-- Chat History Section -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8 transition-colors duration-300">
+                <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Your Conversations with CyberAI Expert</h2>
+                
+                <div class="flex flex-col md:flex-row gap-6">
+                    <!-- Conversation List -->
+                    <div class="w-full md:w-1/3 bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Your Conversations</h3>
+                        <div class="space-y-2 max-h-[500px] overflow-y-auto">
+                            {% if conversations %}
+                                {% for conversation in conversations %}
+                                    <div class="p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 {% if active_conversation == conversation.id %}bg-gray-100 dark:bg-gray-700{% endif %}" 
+                                         onclick="window.location.href='?conversation_id={{ conversation.id }}'">
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-medium text-gray-800 dark:text-gray-200">Conversation {{ loop.index }}</span>
+                                            <span class="text-xs text-gray-500 dark:text-gray-400">
+                                                {% if conversation.created_at is string %}
+                                                    {{ conversation.created_at.split('T')[0] if 'T' in conversation.created_at else conversation.created_at.split(' ')[0] }}
+                                                {% else %}
+                                                    {{ conversation.created_at.strftime('%Y-%m-%d') }}
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300 truncate">{{ conversation.first_message|default('New conversation') }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-gray-500 dark:text-gray-400 text-center py-4">No conversations found</p>
+                            {% endif %}
+                        </div>
+                        <a href="?new_conversation=true" class="mt-4 block w-full text-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors duration-200">
+                            Start New Conversation
+                        </a>
+                    </div>
+
+                    <!-- Chat History for Selected Conversation -->
+                    <div class="w-full md:w-2/3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <div id="chat-history-container" class="p-4 overflow-y-auto" style="min-height: 400px; max-height: 600px;">
+                            {% if chats %}
+                                {% set current_date = None %}
+                                {% for chat in chats %}
+                                    {% if chat.created_at is string %}
+                                        {% set chat_date = chat.created_at.split('T')[0] if 'T' in chat.created_at else chat.created_at.split(' ')[0] %}
+                                    {% else %}
+                                        {% set chat_date = chat.created_at.strftime('%Y-%m-%d') %}
+                                    {% endif %}
+                                    
+                                    {% if current_date != chat_date %}
+                                        <div class="text-center my-4">
+                                            <span class="px-4 py-1 bg-gray-200 dark:bg-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300">
+                                                {{ chat_date }}
+                                            </span>
+                                        </div>
+                                        {% set current_date = chat_date %}
+                                    {% endif %}
+                                    
+                                    <!-- User Message -->
+                                    <div class="flex justify-end mb-4">
+                                        <div class="rounded-lg bg-blue-500 text-white p-3 max-w-[70%]">
+                                            {% if chat.media_url %}
+                                                {% if chat.media_type == 'photo' %}
+                                                    <img src="{{ chat.media_url }}" class="rounded-lg mb-2 max-w-full max-h-32" alt="Uploaded image">
+                                                {% elif chat.media_type == 'video' %}
+                                                    <video src="{{ chat.media_url }}" class="rounded-lg mb-2 max-w-full max-h-32" controls></video>
+                                                {% elif chat.media_type == 'audio' %}
+                                                    <audio src="{{ chat.media_url }}" class="w-full mb-2" controls></audio>
+                                                {% endif %}
+                                            {% endif %}
+                                            <p>{{ chat.message }}</p>
+                                            <div class="text-xs opacity-70 text-right mt-1">
+                                                {% if chat.created_at is string %}
+                                                    {{ chat.created_at.split('T')[1].split('.')[0] if 'T' in chat.created_at else chat.created_at.split(' ')[1] }}
+                                                {% else %}
+                                                    {{ chat.created_at.strftime('%H:%M:%S') }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- AI Response -->
+                                    <div class="flex justify-start mb-4">
+                                        <div class="rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white p-3 max-w-[70%]">
+                                            <p>{{ chat.response }}</p>
+                                            <div class="text-xs opacity-70 text-right mt-1">
+                                                {% if chat.created_at is string %}
+                                                    {{ chat.created_at.split('T')[1].split('.')[0] if 'T' in chat.created_at else chat.created_at.split(' ')[1] }}
+                                                {% else %}
+                                                    {{ chat.created_at.strftime('%H:%M:%S') }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                    </svg>
+                                    <p class="text-lg font-semibold">No messages in this conversation</p>
+                                    <p class="mt-2">Start chatting to see messages appear here.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Return to Dashboard Button -->
+            <div class="text-center">
+                <a href="/dashboard" class="inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow transition-colors duration-200">
+                    <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                        </svg>
+                        Return to Dashboard
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-4">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 CyberAI Security Analyzer. All rights reserved.</p>
+            <div class="mt-2 flex justify-center space-x-4">
+                <a href="/terms" class="text-gray-400 hover:text-white">Terms of Service</a>
+                <a href="/privacy" class="text-gray-400 hover:text-white">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Scroll to bottom of chat history on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatHistoryContainer = document.getElementById('chat-history-container');
+        if (chatHistoryContainer) {
+            chatHistoryContainer.scrollTop = chatHistoryContainer.scrollHeight;
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up - AI-Powered Security Analyzer{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex flex-col">
+    <!-- Header with Logo -->
+    <header class="bg-gray-100 dark:bg-gray-800 shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="logo-container animate-float">
+                <img src="{{ url_for('static', filename='images/cyber_ai_logo_use_cyber_wolf_with_name_cyberai_look__and_fill_realstic_and_orignal_more_atractive-removebg-preview.png') }}" alt="CyberAI Wolf Logo" class="h-16">
+            </a>
+        </div>
+    </header>
+
+    <!-- Sign Up Form -->
+    <div class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
+        <div class="max-w-md w-full space-y-8 animate-bounce-in">
+            <div class="text-center">
+                <h2 class="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">Create your account</h2>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                    Or <a href="/login" class="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">sign in to your existing account</a>
+                </p>
+            </div>
+            
+            {% if error %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative animate-shake" role="alert">
+                <span class="block sm:inline">{{ error }}</span>
+            </div>
+            {% endif %}
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="{% if category == 'success' %}bg-green-100 border border-green-400 text-green-700{% else %}bg-red-100 border border-red-400 text-red-700{% endif %} px-4 py-3 rounded relative animate-shake" role="alert">
+                            <span class="block sm:inline">{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form class="mt-8 space-y-6" action="/signup" method="POST">
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <div class="animate-slide-down" style="animation-delay: 0.1s;">
+                        <label for="name" class="sr-only">Full name</label>
+                        <input id="name" name="name" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" placeholder="Full name">
+                    </div>
+                    <div class="animate-slide-down" style="animation-delay: 0.2s;">
+                        <label for="email" class="sr-only">Email address</label>
+                        <input id="email" name="email" type="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" placeholder="Email address">
+                    </div>
+                    <div class="animate-slide-down" style="animation-delay: 0.3s;">
+                        <label for="password" class="sr-only">Password</label>
+                        <input id="password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" placeholder="Password">
+                    </div>
+                    <div class="animate-slide-down" style="animation-delay: 0.4s;">
+                        <label for="confirm_password" class="sr-only">Confirm password</label>
+                        <input id="confirm_password" name="confirm_password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" placeholder="Confirm password">
+                    </div>
+                </div>
+
+                <div class="animate-slide-up" style="animation-delay: 0.5s;">
+                    <div class="flex items-center">
+                        <input id="terms" name="terms" type="checkbox" required class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-700 rounded">
+                        <label for="terms" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+                            I agree to the <a href="{{ url_for('terms') }}" class="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">Terms of Service</a> and <a href="{{ url_for('privacy') }}" class="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">Privacy Policy</a>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="animate-slide-up" style="animation-delay: 0.6s;">
+                    <button type="submit" class="btn-animated group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 hover-lift">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <svg class="h-5 w-5 text-blue-500 group-hover:text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                            </svg>
+                        </span>
+                        Create account
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-4">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 CyberAI Security. All rights reserved.</p>
+        </div>
+    </footer>
+</div>
+
+<style>
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    .animate-shake {
+        animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+    }
+</style>
+{% endblock %}

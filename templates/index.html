@@ -1,0 +1,736 @@
+{% extends "base.html" %}
+
+{% block title %}AI-Powered Security Analyzer{% endblock %}
+
+{% block head %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .dark .hero-section {
+        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    }
+    .dark .logo-text {
+        color: #fff;
+    }
+    .dark .text-gray-700 {
+        color: #fff;
+    }
+    .dark .text-gray-600 {
+        color: #ccc;
+    }
+    .dark .text-gray-400 {
+        color: #aaa;
+    }
+    .dark .text-gray-300 {
+        color: #999;
+    }
+    .dark .bg-gray-100 {
+        background-color: #333;
+    }
+    .dark .bg-gray-800 {
+        background-color: #222;
+    }
+    .dark .bg-gray-900 {
+        background-color: #111;
+    }
+    .dark .shadow-md {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    .animate-float {
+        animation: float 3s infinite;
+        animation-fill-mode: forwards;
+    }
+    .animate-slide-in-left {
+        animation: slide-in-left 1s;
+        animation-fill-mode: forwards;
+    }
+    .animate-slide-in-right {
+        animation: slide-in-right 1s;
+        animation-fill-mode: forwards;
+    }
+    .animate-slide-down {
+        animation: slide-down 1s;
+        animation-fill-mode: forwards;
+    }
+    .animate-slide-up {
+        animation: slide-up 1s;
+        animation-fill-mode: forwards;
+    }
+    .animate-bounce-in {
+        animation: bounce-in 1s;
+        animation-fill-mode: forwards;
+    }
+    .animate-card {
+        animation: card 1s;
+        animation-fill-mode: forwards;
+    }
+    .animate-pulse-slow {
+        animation: pulse-slow 2s infinite;
+        animation-fill-mode: forwards;
+    }
+    .animate-spin-slow {
+        animation: spin-slow 2s infinite;
+        animation-fill-mode: forwards;
+    }
+    @keyframes float {
+        0% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+    @keyframes slide-in-left {
+        0% {
+            transform: translateX(-100%);
+        }
+        100% {
+            transform: translateX(0);
+        }
+    }
+    @keyframes slide-in-right {
+        0% {
+            transform: translateX(100%);
+        }
+        100% {
+            transform: translateX(0);
+        }
+    }
+    @keyframes slide-down {
+        0% {
+            transform: translateY(-100%);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+    @keyframes slide-up {
+        0% {
+            transform: translateY(100%);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+    @keyframes bounce-in {
+        0% {
+            transform: scale(0);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    @keyframes card {
+        0% {
+            transform: scale(0.5);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    @keyframes pulse-slow {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    @keyframes spin-slow {
+        0% {
+            transform: rotate(0);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex flex-col">
+    <!-- Header with Logo -->
+    <header class="bg-gray-100 dark:bg-gray-800 shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="logo-container animate-float">
+                <img src="{{ url_for('static', filename='images/cyber_ai_logo_use_cyber_wolf_with_name_cyberai_look__and_fill_realstic_and_orignal_more_atractive-removebg-preview.png') }}" alt="CyberAI Wolf Logo" class="h-16">
+                <span class="logo-text ml-2">CyberAI</span>
+            </a>
+            <div class="flex space-x-4">
+                <a href="/login" class="btn-animated bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow hover-lift animate-slide-in-left">Login</a>
+                <a href="/signup" class="btn-animated bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md shadow hover-lift animate-slide-in-right">Sign Up</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-5xl font-bold mb-4 animate-slide-down">AI-Powered Security Analyzer</h1>
+            <p class="text-xl mb-8 animate-slide-up">Check your security posture in seconds using AI.</p>
+            <a href="/signup" class="btn-animated bg-white text-blue-600 px-6 py-3 rounded-lg shadow-lg font-bold text-lg hover-lift animate-bounce-in">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-white dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 dark:text-white animate-slide-up">Key Features</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-md hover-lift animate-card">
+                    <div class="text-blue-500 dark:text-blue-400 mb-4">
+                        <svg class="w-12 h-12 mx-auto animate-pulse-slow" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-center text-gray-800 dark:text-white">AI-Powered Analysis</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">Our advanced AI algorithms analyze your security posture in seconds, providing actionable insights.</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-md hover-lift animate-card">
+                    <div class="text-green-500 dark:text-green-400 mb-4">
+                        <svg class="w-12 h-12 mx-auto animate-spin-slow" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-center text-gray-800 dark:text-white">Real-time Monitoring</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">Continuous monitoring of your security status with instant alerts for potential vulnerabilities.</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-md hover-lift animate-card">
+                    <div class="text-purple-500 dark:text-purple-400 mb-4">
+                        <svg class="w-12 h-12 mx-auto animate-float" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-center text-gray-800 dark:text-white">Smart Alerts</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">Get intelligent notifications about security issues with clear remediation steps.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-16 bg-gray-100 dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 dark:text-white animate-slide-up">How It Works</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Step 1 -->
+                <div class="flex flex-col items-center animate-card">
+                    <div class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold mb-4">1</div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-white">Sign Up</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">Create your account in seconds and get started right away.</p>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="flex flex-col items-center animate-card">
+                    <div class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold mb-4">2</div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-white">Connect Your Systems</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">Easily connect your websites, servers, or applications for analysis.</p>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="flex flex-col items-center animate-card">
+                    <div class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold mb-4">3</div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-white">Get Insights</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center">Receive detailed security reports with actionable recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-16 bg-white dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 dark:text-white animate-slide-up">What Our Users Say</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-md hover-lift animate-card">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-500 mr-4">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 dark:text-white">Sarah Johnson</h4>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">CTO, TechStart</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300">"This tool has transformed how we approach security. The AI-powered insights have helped us identify vulnerabilities we never knew existed."</p>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-md hover-lift animate-card">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-500 mr-4">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 dark:text-white">Michael Chen</h4>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">Security Engineer, DataSecure</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300">"The real-time monitoring capabilities are impressive. We've been able to respond to potential threats before they become problems."</p>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-md hover-lift animate-card">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-500 mr-4">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 dark:text-white">Emily Rodriguez</h4>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">CEO, WebGuard</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300">"As a small business owner, I don't have a dedicated security team. This tool gives me peace of mind knowing our systems are being monitored 24/7."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4 animate-slide-up">Ready to Secure Your Systems?</h2>
+            <p class="text-xl mb-8 animate-slide-up">Join thousands of businesses that trust our AI-powered security analyzer.</p>
+            <a href="/signup" class="btn-animated bg-white text-blue-600 px-6 py-3 rounded-lg shadow-lg font-bold text-lg hover-lift animate-bounce-in">Get Started Today</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <img src="{{ url_for('static', filename='images/cyber_ai_logo_use_cyber_wolf_with_name_cyberai_look__and_fill_realstic_and_orignal_more_atractive-removebg-preview.png') }}" alt="CyberAI Wolf Logo" class="h-12">
+                </div>
+                <div class="flex space-x-4">
+                    <a href="{{ url_for('privacy') }}" class="hover:text-blue-400 transition-colors">Privacy Policy</a>
+                    <a href="{{ url_for('terms') }}" class="hover:text-blue-400 transition-colors">Terms of Service</a>
+                    <a href="#" class="hover:text-blue-400 transition-colors">Contact Us</a>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <p>&copy; 2025 CyberAI Security. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- Chat Widget -->
+<div id="chat-widget" class="fixed bottom-4 right-4 z-50">
+    <div id="chat-button" class="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-4 shadow-lg cursor-pointer transform transition-transform hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+    </div>
+    
+    <div id="chat-container" class="hidden bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden" style="width: 350px; height: 500px;">
+        <div class="bg-blue-500 dark:bg-blue-600 text-white p-4 flex justify-between items-center">
+            <h3 class="font-semibold">Chat with CyberAI Expert</h3>
+            <button id="close-chat" class="text-white hover:text-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+        
+        <div id="chat-messages" class="p-4 overflow-y-auto bg-gray-50 dark:bg-gray-900" style="height: 370px;">
+            <div class="text-center text-gray-500 dark:text-gray-400 text-sm mb-4">
+                Start chatting with our AI cybersecurity expert to get help with cyber crime awareness, prevention, and solutions.
+            </div>
+            <!-- Messages will be inserted here -->
+        </div>
+        
+        <div class="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <div class="flex items-center mb-2">
+                <button id="upload-photo" class="text-gray-400 mr-2 relative cursor-not-allowed" title="Log in to upload photos">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="absolute -top-1 -right-1 bg-gray-600 text-white rounded-full p-1" style="font-size: 8px; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                </button>
+                <button id="upload-video" class="text-gray-400 mr-2 relative cursor-not-allowed" title="Log in to upload videos">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                        <path fill-rule="evenodd" d="M12 5a1 1 0 011 1v3.293l2.707-2.707a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L12 9.293V6a1 1 0 011-1z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="absolute -top-1 -right-1 bg-gray-600 text-white rounded-full p-1" style="font-size: 8px; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                </button>
+                <button id="record-audio" class="text-blue-500 hover:text-blue-600 mr-2" title="Record Audio">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <input type="file" id="file-input" class="hidden" accept="audio/*">
+            </div>
+            <div id="media-preview" class="hidden mb-2 relative rounded overflow-hidden">
+                <img id="image-preview" class="hidden max-w-full max-h-32 rounded" src="" alt="Preview">
+                <video id="video-preview" class="hidden max-w-full max-h-32 rounded" controls></video>
+                <audio id="audio-preview" class="hidden w-full" controls></audio>
+                <button id="cancel-media" class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 shadow">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+            <div class="flex">
+                <input id="chat-input" type="text" class="flex-1 rounded-l-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type your message...">
+                <button id="send-message" class="bg-blue-500 hover:bg-blue-600 text-white rounded-r-lg px-4 py-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                <span id="message-limit-notice">Anonymous users are limited to 5 messages. <a href="/login" class="text-blue-500 hover:underline">Log in</a> for unlimited access.</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Chat functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatButton = document.getElementById('chat-button');
+        const chatContainer = document.getElementById('chat-container');
+        const closeChat = document.getElementById('close-chat');
+        const chatInput = document.getElementById('chat-input');
+        const sendMessage = document.getElementById('send-message');
+        const chatMessages = document.getElementById('chat-messages');
+        const uploadPhoto = document.getElementById('upload-photo');
+        const uploadVideo = document.getElementById('upload-video');
+        const recordAudio = document.getElementById('record-audio');
+        const fileInput = document.getElementById('file-input');
+        const mediaPreview = document.getElementById('media-preview');
+        const imagePreview = document.getElementById('image-preview');
+        const videoPreview = document.getElementById('video-preview');
+        const audioPreview = document.getElementById('audio-preview');
+        const cancelMedia = document.getElementById('cancel-media');
+        
+        let mediaData = null;
+        let mediaType = null;
+        let recorder = null;
+        let recordedChunks = [];
+        
+        // Toggle chat widget
+        chatButton.addEventListener('click', function() {
+            chatContainer.classList.toggle('hidden');
+            if (!chatContainer.classList.contains('hidden')) {
+                chatInput.focus();
+            }
+        });
+        
+        // Close chat widget
+        closeChat.addEventListener('click', function() {
+            chatContainer.classList.add('hidden');
+        });
+        
+        // Send message on enter key
+        chatInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                sendMessageToAI();
+            }
+        });
+        
+        // Send message on button click
+        sendMessage.addEventListener('click', sendMessageToAI);
+        
+        // Locked media buttons (photo and video) will redirect to login
+        uploadPhoto.addEventListener('click', function() {
+            showLoginPrompt('Upload photos');
+        });
+        
+        // Upload video (locked for anonymous users)
+        uploadVideo.addEventListener('click', function() {
+            showLoginPrompt('Upload videos');
+        });
+        
+        // Show login prompt
+        function showLoginPrompt(feature) {
+            addMessageToChat('system', `${feature} feature is only available for logged-in users. <a href="/login" class="text-blue-500 hover:underline">Login</a> or <a href="/signup" class="text-blue-500 hover:underline">Sign up</a> to access all features.`);
+        }
+        
+        // Record audio
+        recordAudio.addEventListener('click', function() {
+            if (recorder && recorder.state === 'recording') {
+                recorder.stop();
+                recordAudio.classList.remove('text-red-500');
+                recordAudio.classList.add('text-blue-500');
+            } else {
+                startAudioRecording();
+            }
+        });
+        
+        // Handle file selection
+        fileInput.addEventListener('change', function() {
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    mediaData = e.target.result;
+                    showMediaPreview(file);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Cancel media upload
+        cancelMedia.addEventListener('click', function() {
+            clearMediaPreview();
+        });
+        
+        // Show media preview based on file type
+        function showMediaPreview(file) {
+            mediaPreview.classList.remove('hidden');
+            const fileType = file.type.split('/')[0];
+            
+            if (fileType === 'image') {
+                imagePreview.src = URL.createObjectURL(file);
+                imagePreview.classList.remove('hidden');
+                videoPreview.classList.add('hidden');
+                audioPreview.classList.add('hidden');
+                mediaType = 'photo';
+            } else if (fileType === 'video') {
+                videoPreview.src = URL.createObjectURL(file);
+                videoPreview.classList.remove('hidden');
+                imagePreview.classList.add('hidden');
+                audioPreview.classList.add('hidden');
+                mediaType = 'video';
+            } else if (fileType === 'audio') {
+                audioPreview.src = URL.createObjectURL(file);
+                audioPreview.classList.remove('hidden');
+                imagePreview.classList.add('hidden');
+                videoPreview.classList.add('hidden');
+                mediaType = 'audio';
+            }
+        }
+        
+        // Clear media preview
+        function clearMediaPreview() {
+            mediaPreview.classList.add('hidden');
+            imagePreview.classList.add('hidden');
+            videoPreview.classList.add('hidden');
+            audioPreview.classList.add('hidden');
+            
+            imagePreview.src = '';
+            videoPreview.src = '';
+            audioPreview.src = '';
+            
+            mediaData = null;
+            mediaType = null;
+            
+            // Clear file input
+            fileInput.value = null;
+        }
+        
+        // Start audio recording
+        function startAudioRecording() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(function(stream) {
+                        recordAudio.classList.remove('text-blue-500');
+                        recordAudio.classList.add('text-red-500');
+                        
+                        recorder = new MediaRecorder(stream);
+                        recordedChunks = [];
+                        
+                        recorder.ondataavailable = function(e) {
+                            if (e.data.size > 0) {
+                                recordedChunks.push(e.data);
+                            }
+                        };
+                        
+                        recorder.onstop = function() {
+                            // Create the audio file
+                            const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+                            const file = new File([blob], 'recording.webm', { type: 'audio/webm' });
+                            
+                            // Convert to base64
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                mediaData = e.target.result;
+                                mediaType = 'audio';
+                                showMediaPreview(file);
+                            };
+                            reader.readAsDataURL(blob);
+                            
+                            // Stop all tracks
+                            stream.getTracks().forEach(track => track.stop());
+                        };
+                        
+                        recorder.start();
+                    })
+                    .catch(function(err) {
+                        console.error('Error accessing microphone:', err);
+                        alert('Could not access microphone. Please check your permissions.');
+                    });
+            } else {
+                alert('Your browser does not support audio recording.');
+            }
+        }
+        
+        // Send message to AI
+        function sendMessageToAI() {
+            const message = chatInput.value.trim();
+            if (!message && !mediaData) return;
+            
+            // Add user message to chat
+            addMessageToChat('user', message, mediaData, mediaType);
+            
+            // Clear input
+            chatInput.value = '';
+            
+            // Show loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'flex justify-start mb-4';
+            loadingDiv.innerHTML = `
+                <div class="rounded-lg bg-gray-200 dark:bg-gray-700 p-3 max-w-[70%] relative">
+                    <div class="loading-dots">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Add loading dots style if not already added
+            if (!document.getElementById('loading-dots-style')) {
+                const style = document.createElement('style');
+                style.id = 'loading-dots-style';
+                style.textContent = `
+                    .loading-dots { display: flex; }
+                    .dot { height: 8px; width: 8px; border-radius: 50%; background-color: #6B7280; margin: 0 3px; animation: pulse 1.5s infinite; }
+                    .dot:nth-child(2) { animation-delay: 0.3s; }
+                    .dot:nth-child(3) { animation-delay: 0.6s; }
+                    @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Send to server
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: message,
+                    media: mediaData,
+                    media_type: mediaType
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove loading indicator
+                chatMessages.removeChild(loadingDiv);
+                
+                if (data.success) {
+                    // Add AI response to chat
+                    addMessageToChat('ai', data.response, data.media_url);
+                } else {
+                    // Handle error
+                    if (data.require_login) {
+                        // Show login required message
+                        addMessageToChat('system', 'You have reached the message limit. Please login to continue the conversation.');
+                    } else {
+                        // Show general error
+                        addMessageToChat('system', 'Sorry, there was an error processing your request. Please try again.');
+                    }
+                }
+            })
+            .catch(error => {
+                // Remove loading indicator
+                chatMessages.removeChild(loadingDiv);
+                
+                // Show error message
+                addMessageToChat('system', 'Sorry, there was a network error. Please try again.');
+                console.error('Error:', error);
+            });
+            
+            // Clear media preview
+            clearMediaPreview();
+        }
+        
+        // Add message to chat
+        function addMessageToChat(sender, message, media, mediaType) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-4`;
+            
+            let mediaHtml = '';
+            
+            if (media) {
+                if (mediaType === 'photo' || (!mediaType && media.startsWith('data:image'))) {
+                    mediaHtml = `<img src="${media}" class="rounded-lg mb-2 max-w-full max-h-32" alt="Uploaded image">`;
+                } else if (mediaType === 'video' || (!mediaType && media.startsWith('data:video'))) {
+                    mediaHtml = `<video src="${media}" class="rounded-lg mb-2 max-w-full max-h-32" controls></video>`;
+                } else if (mediaType === 'audio' || (!mediaType && media.startsWith('data:audio'))) {
+                    mediaHtml = `<audio src="${media}" class="w-full mb-2" controls></audio>`;
+                } else if (typeof media === 'string' && media.startsWith('/static/')) {
+                    // Server-stored media
+                    if (mediaType === 'photo') {
+                        mediaHtml = `<img src="${media}" class="rounded-lg mb-2 max-w-full max-h-32" alt="Uploaded image">`;
+                    } else if (mediaType === 'video') {
+                        mediaHtml = `<video src="${media}" class="rounded-lg mb-2 max-w-full max-h-32" controls></video>`;
+                    } else if (mediaType === 'audio') {
+                        mediaHtml = `<audio src="${media}" class="w-full mb-2" controls></audio>`;
+                    }
+                }
+            }
+            
+            const bgColor = sender === 'user' ? 'bg-blue-500 text-white' : 
+                           sender === 'ai' ? 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white' : 
+                           'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-100';
+            
+            messageDiv.innerHTML = `
+                <div class="rounded-lg ${bgColor} p-3 max-w-[70%]">
+                    ${mediaHtml}
+                    <p>${message || ''}</p>
+                    <div class="text-xs opacity-70 text-right mt-1">${new Date().toLocaleTimeString()}</div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    });
+
+    // Additional JavaScript can be added here
+</script>
+{% endblock %}
